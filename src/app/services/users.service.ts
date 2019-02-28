@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -20,22 +22,114 @@ export class UsersService {
   }
 
   // This method is used to add a user
-  addUser() {
-    return '';
+  addUser(user) : Observable<any>{
+
+    try {
+
+      let userList = JSON.parse(localStorage.getItem('usersList'))
+      // If user exists
+
+      let userFilter = _.find(userList, {'id': user.id})
+
+      if (_.find(userList, function(elem) {
+        return elem.phone === user.phone && elem.id !== user.id
+      })) {
+        console.log('Phone number already exist ')
+
+        return throwError('Phone number already exist ' );
+      }
+
+
+      user.id = parseInt(_.orderBy(userList, ['id'])[userList.length - 1].id) + 1
+
+      console.log('New user ', user)
+
+      userList.push(user)
+
+      localStorage.removeItem('usersList')
+
+      localStorage.setItem('usersList', JSON.stringify(userList))
+
+      return of(JSON.parse(localStorage.getItem('usersList')))
+
+    }
+    catch (e) {
+      return throwError('Error ', e);
+    }
+
   }
 
   // This method is used to remove a user
-  removeUser(userId) {
+  removeUser(user): Observable<any> {
 
-    return '';
+
+    try {
+
+      let userList = JSON.parse(localStorage.getItem('usersList'))
+      let userFilter = _.remove(userList, {'id': user.id})
+
+      console.log('userFilter ', userFilter)
+      console.log('userList ', userList)
+
+      localStorage.removeItem('usersList')
+
+      localStorage.setItem('usersList', JSON.stringify(userList))
+
+      return of(JSON.parse(localStorage.getItem('usersList')))
+
+    }
+    catch (e) {
+      return throwError('Error ', e);
+    }
+  }
+
+
+  isPhoneDuplicated(ele, elementToUpdate){
+    return ele.phone === elementToUpdate.phone && ele.id !== elementToUpdate.id
   }
 
   // This method is used to update a user
-  updateUser(userId, userName, userPhone) {
+  updateUser(user): Observable<any> {
 
-    return '';
+    try {
+
+      let userList = JSON.parse(localStorage.getItem('usersList'))
+      // If user exists
+
+      let userFilter = _.find(userList, {'id': user.id})
+
+      if (_.find(userList, function(elem) {
+        return elem.phone === user.phone && elem.id !== user.id
+      })) {
+        console.log('Phone number already exist ')
+
+        return throwError('Phone number already exist ' );
+      }
+
+      if(userFilter) {
+        userFilter['name'] = user.name
+        userFilter['role'] = user.role
+        userFilter['username'] = user.username
+        userFilter['phone'] = user.phone
+
+        localStorage.removeItem('usersList')
+
+        localStorage.setItem('usersList', JSON.stringify(userList))
+
+        return of(JSON.parse(localStorage.getItem('usersList')))
+      }
+      else {
+        console.log('updateUser: ', userFilter)
+        console.log('update: ', user)
+
+        return of(JSON.parse(localStorage.getItem('usersList')))
+      }
+    }
+    catch (e) {
+      return throwError('Error ', e);
+    }
+
   }
-
 
 
   private setStartingUsers() {
@@ -53,4 +147,7 @@ export class UsersService {
     localStorage.setItem('usersList', JSON.stringify(usersObject))
 
   }
+
+
+
 }
