@@ -24,8 +24,8 @@
                       id="postText" #postText="ngModel"
                       [(ngModel)]="modelPost.postText"
                       [ngClass]="{ 'is-invalid': f.submitted && postText.invalid }"
-                      [mention]="users"
-                      [mentionConfig]="{labelKey:'username'}"
+
+                      [mentionConfig]="mentionConfig"
             >
             </textarea>
           </div>
