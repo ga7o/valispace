@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 
 import * as _ from 'lodash';
@@ -9,7 +8,7 @@ import * as _ from 'lodash';
 })
 export class UsersService {
 
-  constructor(private http: HttpClient) { }
+  constructor() { }
 
   getData(): Observable<any>  {
 
@@ -18,6 +17,26 @@ export class UsersService {
     }
 
     return  of(JSON.parse(localStorage.getItem('usersList')));
+
+  }
+
+  searchUser(searchString): Observable <any> {
+
+    console.log('searchUser')
+    if(!localStorage.getItem('usersList')){
+      this.setStartingUsers()
+    }
+
+
+    let userList = _.find(localStorage.getItem('usersList'),
+      function (elem) {
+      return elem.search(searchString) > -1
+    })
+
+
+
+    return  of(JSON.parse(userList));
+
 
   }
 
@@ -83,11 +102,6 @@ export class UsersService {
     }
   }
 
-
-  isPhoneDuplicated(ele, elementToUpdate){
-    return ele.phone === elementToUpdate.phone && ele.id !== elementToUpdate.id
-  }
-
   // This method is used to update a user
   updateUser(user): Observable<any> {
 
@@ -132,6 +146,7 @@ export class UsersService {
   }
 
 
+  // Setting up the starting users
   private setStartingUsers() {
 
     console.log('Setting up the starting users for the app')
@@ -147,7 +162,5 @@ export class UsersService {
     localStorage.setItem('usersList', JSON.stringify(usersObject))
 
   }
-
-
 
 }

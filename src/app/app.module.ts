@@ -11,6 +11,7 @@ import { HomeComponent } from './components/home/home.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { NavComponent } from './components/nav/nav.component';
 import { AboutComponent } from './components/about/about.component';
+import { MentionModule } from 'angular-mentions/mention';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { AboutComponent } from './components/about/about.component';
     AppRoutingModule,
     HttpClientModule,
     NgbModule,
-    FormsModule
+    FormsModule,
+    MentionModule
   ],
   providers: [],
   bootstrap: [AppComponent]

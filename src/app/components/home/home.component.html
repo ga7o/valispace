@@ -1,3 +1,43 @@
-<p>
-  home works!
-</p>
+<h1>Posts</h1>
+<button (click)="openModal(contentPost)">Add post</button>
+
+
+
+<ng-template #contentPost let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{modalType}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form name="formPost" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+    <div class="modal-body">
+
+      <div>
+        <div class="form-group row">
+          <label for="postText" class="col-sm-2 col-form-label">Post</label>
+          <div class="col-sm-10">
+            <textarea rows="4" cols="50"
+                      placeholder="Add a post detail"
+                      class="form-control"
+                      name="postText"
+                      id="postText" #postText="ngModel"
+                      [(ngModel)]="modelPost.postText"
+                      [ngClass]="{ 'is-invalid': f.submitted && postText.invalid }"
+                      [mention]="users"
+                      [mentionConfig]="{labelKey:'username'}"
+            >
+            </textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="form-group ">
+        <button class="btn btn-outline-dark" >{{buttonText}}</button>
+      </div>
+
+    </div>
+  </form>
+</ng-template>
